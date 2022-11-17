@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -22,16 +21,11 @@ module.exports = {
     ]
   },
   devtool: 'inline-source-map',
-  devServer: {
-    static: './dist',
-    hot: true
-  },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Development',
       template: "./public/index.html"
     }),
-    new webpack.HotModuleReplacementPlugin(),
   ],
   output: {
     filename: '[name].bundle.js',
