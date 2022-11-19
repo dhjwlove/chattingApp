@@ -9,22 +9,22 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.m?js$/,
+        test: /\.m?js?$/,
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-react']
-          }
-        }
-      }
-    ]
+            presets: ['@babel/preset-react'],
+          },
+        },
+      },
+    ],
   },
   devtool: 'inline-source-map',
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Development',
-      template: "./public/index.html"
+      template: './public/index.html',
     }),
   ],
   output: {

@@ -1,7 +1,8 @@
 import React from 'react';
+import ChatTest from './ChatTest';
 
-function App () {
-    return (<div><h1>야야야야야야 </h1></div>);
+function App() {
+  return (<ChatTest />);
 }
 
 export default App;
