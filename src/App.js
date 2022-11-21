@@ -1,7 +1,8 @@
 import React from 'react';
+import ChatPage from './pages/ChatPage';
 
 function App () {
-    return (<div><h1>야야야야야야 </h1></div>);
+    return (<ChatPage/>);
 }
 
 export default App;
