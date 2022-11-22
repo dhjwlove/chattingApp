@@ -1,9 +1,14 @@
 import React from 'react';
-import ChatTest from './ChatTest';
+// import ChatTest from './ChatTest';
 import ChatPage from './pages/ChatPage';
+import ErrorBoundary from './ErrorBoundary';
 
 function App() {
-  return (<ChatTest />);
+  return (
+    <ErrorBoundary>
+      <ChatPage />
+    </ErrorBoundary>
+  );
 }
 // function App () {
 //     return (<ChatPage/>);
