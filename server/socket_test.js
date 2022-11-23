@@ -11,9 +11,9 @@ io.on('connection', (socket) => {
     console.log('연결 끊어짐', socket.id);
   });
 
-  socket.on('message', (d) => {
+  socket.on('request_message', (d) => {
     console.log('d', d);
-    socket.emit('message', d);
+    io.emit('response_message', d);
   });
 });
 

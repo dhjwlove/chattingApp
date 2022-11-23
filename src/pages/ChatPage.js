@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import './ChatPage.css';
 
@@ -10,23 +10,29 @@ export default function ChatPage() {
   const [content, setContent] = useState('');
   const [chatList, setChatList] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const chatListRef = useRef([]);
+
+  const updateState = (data) => {
+    chatListRef.current = [...chatListRef.current, data];
+    setChatList(chatListRef.current);
+  };
 
   useEffect(() => {
     socket.on('connection', () => {
-      console.log('socket 연결됨!');
+      console.log('socket connected!');
       setIsConnected(true);
     });
 
     socket.on('disconnect', () => {
-      console.log('socket 연결 끊어짐!');
+      console.log('socket disconneted!');
       setIsConnected(false);
     });
 
-    socket.on('message', (d) => {
-      console.log('메세지 받았당', d);
-      console.log('user키가 같나? ', d.userKey === userKey);
+    socket.on('response_message', (d) => {
+      console.log('response_message');
       if (d.userKey !== userKey) {
-        setChatList([...chatList, d.content]);
+        console.log('from remote user message:', d.content);
+        updateState(d.content);
       }
     });
 
@@ -34,7 +40,7 @@ export default function ChatPage() {
       socket.off('connect');
       socket.off('disconnect');
     };
-  }, [chatList]);
+  }, []);
 
   const onTypeHandler = (e) => {
     const text = e.target.value;
@@ -42,8 +48,8 @@ export default function ChatPage() {
   };
 
   const btnClickHandler = () => {
-    socket.emit('message', { userKey, content });
-    setChatList([...chatList, content]);
+    socket.emit('request_message', { userKey, content });
+    updateState(content);
     setContent('');
   };
 
