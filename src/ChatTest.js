@@ -46,7 +46,7 @@ export default function ChatTest() {
         {' '}
         { lastPong || '-' }
       </p>
-      <button onClick={sendPing}>Send ping</button>
+      <button type="button" onClick={sendPing}>Send ping</button>
     </div>
   );
 }

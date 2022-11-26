@@ -1,12 +1,17 @@
 import React from 'react';
 // import ChatTest from './ChatTest';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ChatPage from './pages/ChatPage';
 import ErrorBoundary from './ErrorBoundary';
 
 function App() {
   return (
     <ErrorBoundary>
-      <ChatPage />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<ChatPage />} />
+        </Routes>
+      </BrowserRouter>
     </ErrorBoundary>
   );
 }
