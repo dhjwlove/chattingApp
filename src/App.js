@@ -10,8 +10,4 @@ function App() {
     </ErrorBoundary>
   );
 }
-// function App () {
-//     return (<ChatPage/>);
-// }
-
 export default App;

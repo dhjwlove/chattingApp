@@ -32,7 +32,7 @@ export default function ChatPage() {
       console.log('response_message');
       if (d.userKey !== userKey) {
         console.log('from remote user message:', d.content);
-        updateState(d.content);
+        updateState([d.content, 'otherText']);
       }
     });
 
@@ -49,7 +49,7 @@ export default function ChatPage() {
 
   const btnClickHandler = () => {
     socket.emit('request_message', { userKey, content });
-    updateState(content);
+    updateState([content, 'myText']);
     setContent('');
   };
 
@@ -67,11 +67,14 @@ export default function ChatPage() {
         {`소켓연결 ${isConnected}`}
       </div>
       <div>채팅 내용</div>
-      {chatList.map((d, i) => (
-        <div key={`c-${i}`}>
-          {d}
-        </div>
-      ))}
+      {chatList.map((d, i) => {
+        const [text, styleName] = d;
+        return (
+          <div className={styleName} key={`c-${i}`}>
+            {text}
+          </div>
+        );
+      })}
 
       <div>내용 입력</div>
       <div>
