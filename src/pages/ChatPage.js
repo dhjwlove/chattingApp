@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import io from 'socket.io-client';
+import socket from '../utils/socket';
 import './ChatPage.css';
 
-const socket = io();
-const userKey = Date.now();
-console.log('userKey', userKey);
+// const userKey = Date.now();
+// console.log('userKey', userKey);
 
 export default function ChatPage() {
   const [content, setContent] = useState('');
@@ -18,9 +17,33 @@ export default function ChatPage() {
   };
 
   useEffect(() => {
-    socket.on('connection', () => {
-      console.log('socket connected!');
-      setIsConnected(true);
+    const sessionID = localStorage.getItem('sessionID');
+    console.log('sessionID', sessionID);
+
+    if (sessionID) {
+      socket.auth = { sessionID };
+      socket.connect();
+      // todo: 사용자 선택 시 username 설정하도록 변경하기.
+    } else {
+      socket.auth = { username: 'dhkim' };
+      socket.connect();
+    }
+
+    // socket.on('connection', () => {
+    //   console.log('socket connected!');
+    //   setIsConnected(true);
+    // });
+
+    socket.on('session', ({ sessionID, userID }) => {
+      socket.auth = { sessionID };
+      localStorage.setItem('sessionID', sessionID);
+      socket.userID = userID;
+    });
+
+    socket.on('connect_error', (err) => {
+      if (err.message === 'invalid username') {
+        console.log(err.message);
+      }
     });
 
     socket.on('disconnect', () => {
@@ -28,13 +51,13 @@ export default function ChatPage() {
       setIsConnected(false);
     });
 
-    socket.on('response_message', (d) => {
-      console.log('response_message');
-      if (d.userKey !== userKey) {
-        console.log('from remote user message:', d.content);
-        updateState([d.content, 'otherText']);
-      }
-    });
+    // socket.on('response_message', (d) => {
+    //   console.log('response_message');
+    //   if (d.userKey !== userKey) {
+    //     console.log('from remote user message:', d.content);
+    //     updateState([d.content, 'otherText']);
+    //   }
+    // });
 
     return () => {
       socket.off('connect');

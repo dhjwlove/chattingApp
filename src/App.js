@@ -2,6 +2,7 @@ import React from 'react';
 // import ChatTest from './ChatTest';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ChatPage from './pages/ChatPage';
+import ChatListPage from './pages/ChatListPage';
 import ErrorBoundary from './ErrorBoundary';
 
 function App() {

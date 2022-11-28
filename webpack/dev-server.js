@@ -8,9 +8,9 @@ const compiler = webpack(config);
 const server = new WebpackDevServer({
   hot: true,
   liveReload: false,
-  proxy: {
-    '/socket.io': 'http://localhost:3000',
-  },
+  // proxy: {
+  //   '/socket.io': 'http://localhost:3000',
+  // },
 }, compiler);
 
 (async () => {

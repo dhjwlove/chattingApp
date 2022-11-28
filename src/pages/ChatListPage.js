@@ -1,13 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function ChatList() {
+function ChatList({ data, onClickChatRoom }) {
+  return (
+    <div onClick={onClickChatRoom}>{data.name}</div>
+  );
+}
+
+export default function ChatListPage() {
+  const [chatList, setChatList] = useState([
+    {
+      name: 'chat room',
+      uuid: 'uuid',
+      peoples: ['A', 'B'],
+    },
+  ]);
+
+  const onClickHandler = () => {
+    console.log('dd');
+  };
+
   return (
     <>
       <div>
-        ChatList
+        ChatListPage
       </div>
       <div>
-        content
+        {chatList.map((d) => <ChatList key={d.name} data={d} onClickChatRoom={onClickHandler} />)}
       </div>
     </>
   );
