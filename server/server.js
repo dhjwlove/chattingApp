@@ -55,6 +55,9 @@ io.on('connection', (socket) => {
     userID: socket.userID,
   });
 
+  // join the "userID" room
+  socket.join(socket.userID);
+
   socket.on('private message', ({ content, to }) => {
     socket.to(to).to(socket.userID).emit('private message', {
       content,

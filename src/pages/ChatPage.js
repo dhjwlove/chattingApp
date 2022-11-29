@@ -23,10 +23,6 @@ export default function ChatPage() {
     if (sessionID) {
       socket.auth = { sessionID };
       socket.connect();
-      // todo: 사용자 선택 시 username 설정하도록 변경하기.
-    } else {
-      socket.auth = { username: 'dhkim' };
-      socket.connect();
     }
 
     // socket.on('connection', () => {
