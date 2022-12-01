@@ -11,6 +11,11 @@ const server = new WebpackDevServer({
   // proxy: {
   //   '/socket.io': 'http://localhost:3000',
   // },
+  historyApiFallback: {
+    // Paths with dots should still use the history fallback.
+    // See https://github.com/facebookincubator/create-react-app/issues/387.
+    disableDotRule: true,
+  },
 }, compiler);
 
 (async () => {

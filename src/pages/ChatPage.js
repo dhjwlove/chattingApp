@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import socket from '../utils/socket';
 import './ChatPage.css';
 
-// const userKey = Date.now();
-// console.log('userKey', userKey);
-
 export default function ChatPage() {
+  const navigate = useNavigate();
   const [content, setContent] = useState('');
   const [chatList, setChatList] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -20,15 +19,10 @@ export default function ChatPage() {
     const sessionID = localStorage.getItem('sessionID');
     console.log('sessionID', sessionID);
 
-    if (sessionID) {
+    if (sessionID !== '') {
       socket.auth = { sessionID };
       socket.connect();
     }
-
-    // socket.on('connection', () => {
-    //   console.log('socket connected!');
-    //   setIsConnected(true);
-    // });
 
     socket.on('session', ({ sessionID, userID }) => {
       socket.auth = { sessionID };
@@ -39,6 +33,8 @@ export default function ChatPage() {
     socket.on('connect_error', (err) => {
       if (err.message === 'invalid username') {
         console.log(err.message);
+        localStorage.setItem('sessionID', '');
+        navigate('/loginPage');
       }
     });
 
@@ -47,15 +43,8 @@ export default function ChatPage() {
       setIsConnected(false);
     });
 
-    // socket.on('response_message', (d) => {
-    //   console.log('response_message');
-    //   if (d.userKey !== userKey) {
-    //     console.log('from remote user message:', d.content);
-    //     updateState([d.content, 'otherText']);
-    //   }
-    // });
-
     return () => {
+      socket.off('session');
       socket.off('connect');
       socket.off('disconnect');
     };
@@ -67,18 +56,11 @@ export default function ChatPage() {
   };
 
   const btnClickHandler = () => {
-    socket.emit('request_message', { userKey, content });
-    updateState([content, 'myText']);
-    setContent('');
+    // socket.emit('request_message', { userKey, content });
+    // updateState([content, 'myText']);
+    // setContent('');
   };
 
-  /**
-   * todo
-   * 1. 내가 작성한 글은 오른쪽으로 가도록 key를 제공
-   * 2. 상대방에게 받은 글은 왼쪽으로 가도록 key 제공
-   * 3. socket 연결하기
-   * 4. socket을 통해 대화내용 이벤트 발생 시마다 array에 저장하기.
-   */
   return (
     <div>
       <h1 className="title">ChatPage</h1>
