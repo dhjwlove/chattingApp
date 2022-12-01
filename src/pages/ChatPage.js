@@ -7,6 +7,7 @@ export default function ChatPage() {
   const navigate = useNavigate();
   const [content, setContent] = useState('');
   const [chatList, setChatList] = useState([]);
+  const [activeUsers, setActiveUsers] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const chatListRef = useRef([]);
 
@@ -28,6 +29,7 @@ export default function ChatPage() {
       socket.auth = { sessionID };
       localStorage.setItem('sessionID', sessionID);
       socket.userID = userID;
+      setIsConnected(true);
     });
 
     socket.on('connect_error', (err) => {
@@ -36,6 +38,22 @@ export default function ChatPage() {
         localStorage.setItem('sessionID', '');
         navigate('/loginPage');
       }
+    });
+
+    socket.on('users', (users) => {
+      users.forEach((user) => {
+        for (let i = 0; i < activeUsers.length; i++) {
+          const activeUser = activeUsers[i];
+          if (activeUser.userID === user.userID) {
+            activeUser.connected = user.connected;
+            break;
+          }
+        }
+        user.self = user.userID === socket.userID;
+        user.message = [];
+        user.hasNewMessages = false;
+        setActiveUsers([...activeUsers, user]);
+      });
     });
 
     socket.on('disconnect', () => {
@@ -47,6 +65,7 @@ export default function ChatPage() {
       socket.off('session');
       socket.off('connect');
       socket.off('disconnect');
+      socket.off('connect_error');
     };
   }, []);
 

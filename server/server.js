@@ -58,6 +58,16 @@ io.on('connection', (socket) => {
   // join the "userID" room
   socket.join(socket.userID);
 
+  const users = [];
+  sessionStore.findAllSessions().forEach((session) => {
+    users.push({
+      userID: session.session.userID,
+      username: session.username,
+      connected: session.connected,
+    });
+  });
+  socket.emit('users', users);
+
   socket.on('private message', ({ content, to }) => {
     socket.to(to).to(socket.userID).emit('private message', {
       content,
@@ -65,8 +75,6 @@ io.on('connection', (socket) => {
       to,
     });
   });
-
-  // socket.emit('connection');
 
   socket.on('disconnect', async () => {
     const matchingSockets = await io.in(socket.userID).fetchSockets();
