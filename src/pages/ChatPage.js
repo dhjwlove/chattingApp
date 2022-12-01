@@ -1,15 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from '../utils/socket';
+import UserPanel from '../components/UserPanel';
 import './ChatPage.css';
+import MessagePanel from '../components/MessagePanel';
 
 export default function ChatPage() {
   const navigate = useNavigate();
   const [content, setContent] = useState('');
   const [chatList, setChatList] = useState([]);
-  const [activeUsers, setActiveUsers] = useState([]);
+  const [existingUserList, setExistingUserList] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [selectedUser, SetSelectedUser] = useState('');
   const chatListRef = useRef([]);
+  const userListRef = useRef([]);
 
   const updateState = (data) => {
     chatListRef.current = [...chatListRef.current, data];
@@ -18,8 +22,6 @@ export default function ChatPage() {
 
   useEffect(() => {
     const sessionID = localStorage.getItem('sessionID');
-    console.log('sessionID', sessionID);
-
     if (sessionID !== '') {
       socket.auth = { sessionID };
       socket.connect();
@@ -42,18 +44,32 @@ export default function ChatPage() {
 
     socket.on('users', (users) => {
       users.forEach((user) => {
-        for (let i = 0; i < activeUsers.length; i++) {
-          const activeUser = activeUsers[i];
-          if (activeUser.userID === user.userID) {
-            activeUser.connected = user.connected;
-            break;
+        for (let i = 0; i < userListRef.current.length; i++) {
+          const existUser = userListRef.current[i];
+          if (existUser.userID === user.userID) {
+            existUser.connected = user.connected;
+            return;
           }
         }
         user.self = user.userID === socket.userID;
         user.message = [];
         user.hasNewMessages = false;
-        setActiveUsers([...activeUsers, user]);
+        userListRef.current.push(user);
       });
+      setExistingUserList([...userListRef.current]);
+    });
+
+    socket.on('user connected', (user) => {
+      for (let i = 0; i < userListRef.current.length; i++) {
+        const existUser = userListRef.current[i];
+        if (existUser.userID === user.userID) {
+          existUser.connected = user.connected;
+          return;
+        }
+      }
+      user.message = [];
+      user.hasNewMessages = false;
+      setExistingUserList([...userListRef.current, user]);
     });
 
     socket.on('disconnect', () => {
@@ -75,31 +91,28 @@ export default function ChatPage() {
   };
 
   const btnClickHandler = () => {
-    // socket.emit('request_message', { userKey, content });
-    // updateState([content, 'myText']);
-    // setContent('');
+    socket.emit('private message', {
+      content,
+      to: selectedUser.userID,
+    });
+    updateState([content, 'myText']);
+    setContent('');
   };
 
   return (
-    <div>
-      <h1 className="title">ChatPage</h1>
-      <div>
-        {`소켓연결 ${isConnected}`}
+    <div className="ChatPage_Wrapper">
+      <div className="LeftPanel">
+        <UserPanel existingUserList={existingUserList} onSelectUser={SetSelectedUser} />
       </div>
-      <div>채팅 내용</div>
-      {chatList.map((d, i) => {
-        const [text, styleName] = d;
-        return (
-          <div className={styleName} key={`c-${i}`}>
-            {text}
-          </div>
-        );
-      })}
-
-      <div>내용 입력</div>
-      <div>
-        <input value={content} onChange={onTypeHandler} />
-        <button type="button" onClick={btnClickHandler}>입력</button>
+      <div className="RightMsgBox">
+        <MessagePanel
+          chatList={chatList}
+          user={selectedUser}
+          isConnected={isConnected}
+          content={content}
+          onTypeHandler={onTypeHandler}
+          btnClickHandler={btnClickHandler}
+        />
       </div>
     </div>
   );

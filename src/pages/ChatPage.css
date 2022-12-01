@@ -9,3 +9,17 @@
 .otherText {
     color: red;
 }
+
+.ChatPage_Wrapper {
+    display: flex;
+}
+
+.LeftPanel {
+    flex-basis: 200px;
+    border-right: 1px solid;
+}
+
+.RightMsgBox {
+    flex: auto;
+    padding-left: 10px;
+}

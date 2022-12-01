@@ -16,12 +16,12 @@ const sessionStore = new InMemorySessionStore();
 io.use((socket, next) => {
   // console.log('socket handshake', socket.handshake);
   const { sessionID } = socket.handshake.auth;
-  console.log('sessionID', sessionID);
+  // console.log('sessionID', sessionID);
   if (sessionID) {
     // find existing session
     const session = sessionStore.findSession(sessionID);
     console.log('All', sessionStore.findAllSessions());
-    console.log('session', session);
+    // console.log('session', session);
     if (session) {
       socket.sessionID = sessionID;
       socket.userID = session.userID;
@@ -30,7 +30,7 @@ io.use((socket, next) => {
     }
   }
   const { username } = socket.handshake.auth;
-  console.log('username', username);
+  // console.log('username', username);
   if (!username) {
     return next(new Error('invalid username'));
   }
@@ -61,12 +61,18 @@ io.on('connection', (socket) => {
   const users = [];
   sessionStore.findAllSessions().forEach((session) => {
     users.push({
-      userID: session.session.userID,
+      userID: session.userID,
       username: session.username,
       connected: session.connected,
     });
   });
   socket.emit('users', users);
+
+  socket.broadcast.emit('user connected', {
+    userID: socket.userID,
+    username: socket.username,
+    connected: true,
+  });
 
   socket.on('private message', ({ content, to }) => {
     socket.to(to).to(socket.userID).emit('private message', {
