@@ -62,6 +62,7 @@ io.on('connection', (socket) => {
       connected: session.connected,
     });
   });
+
   socket.emit('users', users);
 
   socket.broadcast.emit('user connected', {

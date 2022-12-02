@@ -65,7 +65,8 @@ export default function ChatPage() {
       }
       user.messages = [];
       user.hasNewMessages = false;
-      setExistingUserList([...userListRef.current, user]);
+      userListRef.current.push(user);
+      setExistingUserList([...userListRef.current]);
     });
 
     socket.on('private message', ({ content, from, to }) => {
