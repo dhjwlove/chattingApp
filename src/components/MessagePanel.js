@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import './MessagePanel.css';
 
 export default function MessagePanel({
+  selectedUser,
   isConnected,
   chatList,
   content,
@@ -13,12 +15,15 @@ export default function MessagePanel({
       <div>
         {`소켓연결 ${isConnected}`}
       </div>
+      <div>
+        {`${selectedUser.username}과의 대화`}
+      </div>
       <div>채팅 내용</div>
       {chatList.map((d, i) => {
-        const [text, styleName] = d;
+        const { content, fromSelf } = d;
         return (
-          <div className={styleName} key={`c-${i}`}>
-            {text}
+          <div className={fromSelf ? 'myText' : 'otherText'} key={`c-${i}`}>
+            {content}
           </div>
         );
       })}

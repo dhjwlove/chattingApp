@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from '../utils/socket';
 import UserPanel from '../components/UserPanel';
-import './ChatPage.css';
 import MessagePanel from '../components/MessagePanel';
+import './ChatPage.css';
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -11,16 +11,12 @@ export default function ChatPage() {
   const [chatList, setChatList] = useState([]);
   const [existingUserList, setExistingUserList] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [selectedUser, SetSelectedUser] = useState('');
-  const chatListRef = useRef([]);
+  const [selectedUser, setSelectedUser] = useState({});
   const userListRef = useRef([]);
 
-  const updateState = (data) => {
-    chatListRef.current = [...chatListRef.current, data];
-    setChatList(chatListRef.current);
-  };
-
   useEffect(() => {
+    console.log('!!!!!!!!!!!!selectedUser', selectedUser);
+
     const sessionID = localStorage.getItem('sessionID');
     if (sessionID !== '') {
       socket.auth = { sessionID };
@@ -52,7 +48,7 @@ export default function ChatPage() {
           }
         }
         user.self = user.userID === socket.userID;
-        user.message = [];
+        user.messages = [];
         user.hasNewMessages = false;
         userListRef.current.push(user);
       });
@@ -67,9 +63,30 @@ export default function ChatPage() {
           return;
         }
       }
-      user.message = [];
+      user.messages = [];
       user.hasNewMessages = false;
       setExistingUserList([...userListRef.current, user]);
+    });
+
+    socket.on('private message', ({ content, from, to }) => {
+      for (let i = 0; i < userListRef.current.length; i++) {
+        const user = userListRef.current[i];
+        const fromSelf = socket.userID === from;
+        if (user.userID === (fromSelf ? to : from)) {
+          user.messages.push({
+            content,
+            fromSelf,
+          });
+          if (user.userID !== selectedUser.userID) {
+            user.hasNewMessages = true;
+          }
+
+          if (user.userID === selectedUser.userID) {
+            setChatList([...user.messages]);
+          }
+          break;
+        }
+      }
     });
 
     socket.on('disconnect', () => {
@@ -82,8 +99,16 @@ export default function ChatPage() {
       socket.off('connect');
       socket.off('disconnect');
       socket.off('connect_error');
+      socket.off('private message');
     };
-  }, []);
+  }, [selectedUser]);
+
+  useEffect(() => {
+    if (userListRef.current.length > 0) {
+      const userSelected = userListRef.current.find((user) => user.userID === selectedUser.userID);
+      setChatList(userSelected.messages);
+    }
+  }, [selectedUser]);
 
   const onTypeHandler = (e) => {
     const text = e.target.value;
@@ -95,19 +120,24 @@ export default function ChatPage() {
       content,
       to: selectedUser.userID,
     });
-    updateState([content, 'myText']);
+    const userSelected = userListRef.current.find((user) => user.userID === selectedUser.userID);
+    userSelected.messages.push({ content, fromSelf: true });
+    setChatList([...userSelected.messages]);
     setContent('');
   };
 
   return (
     <div className="ChatPage_Wrapper">
       <div className="LeftPanel">
-        <UserPanel existingUserList={existingUserList} onSelectUser={SetSelectedUser} />
+        <UserPanel
+          existingUserList={existingUserList}
+          onSelectUser={setSelectedUser}
+        />
       </div>
       <div className="RightMsgBox">
         <MessagePanel
           chatList={chatList}
-          user={selectedUser}
+          selectedUser={selectedUser}
           isConnected={isConnected}
           content={content}
           onTypeHandler={onTypeHandler}

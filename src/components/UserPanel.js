@@ -8,10 +8,11 @@ export default function UserPanel({ existingUserList, onSelectUser }) {
       {existingUserList.map((user) => (
         <div
           key={user.userID}
-          onClick={(e) => onSelectUser(user.userID)}
+          onClick={() => onSelectUser(user)}
         >
           {user.username}
-          {user.self === true ? '(나)' : ''}
+          {user.self === true ? ' (나)' : ''}
+          {user.connected ? ' online ' : ' offline'}
         </div>
       ))}
     </>

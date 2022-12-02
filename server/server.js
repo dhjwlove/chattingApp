@@ -14,14 +14,11 @@ const { InMemorySessionStore } = require('./InMemorySessionStore');
 const sessionStore = new InMemorySessionStore();
 
 io.use((socket, next) => {
-  // console.log('socket handshake', socket.handshake);
   const { sessionID } = socket.handshake.auth;
-  // console.log('sessionID', sessionID);
   if (sessionID) {
     // find existing session
     const session = sessionStore.findSession(sessionID);
     console.log('All', sessionStore.findAllSessions());
-    // console.log('session', session);
     if (session) {
       socket.sessionID = sessionID;
       socket.userID = session.userID;
@@ -30,7 +27,6 @@ io.use((socket, next) => {
     }
   }
   const { username } = socket.handshake.auth;
-  // console.log('username', username);
   if (!username) {
     return next(new Error('invalid username'));
   }
@@ -95,11 +91,6 @@ io.on('connection', (socket) => {
       });
     }
   });
-
-  // socket.on('request_message', (d) => {
-  //   console.log('d', d);
-  //   io.emit('response_message', d);
-  // });
 });
 
 console.log('start');

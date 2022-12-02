@@ -2,14 +2,6 @@
     color: blue;
 }
 
-.myText {
-    color: green;
-}
-
-.otherText {
-    color: red;
-}
-
 .ChatPage_Wrapper {
     display: flex;
 }
