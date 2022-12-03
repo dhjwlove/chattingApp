@@ -15,8 +15,6 @@ export default function ChatPage() {
   const userListRef = useRef([]);
 
   useEffect(() => {
-    console.log('!!!!!!!!!!!!selectedUser', selectedUser);
-
     const sessionID = localStorage.getItem('sessionID');
     if (sessionID !== '') {
       socket.auth = { sessionID };

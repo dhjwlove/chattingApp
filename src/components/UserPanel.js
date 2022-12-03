@@ -4,7 +4,7 @@ export default function UserPanel({ existingUserList, onSelectUser }) {
   // console.log('existingUserList:', existingUserList);
   return (
     <>
-      <h1>Left Panel</h1>
+      <h1>User Panel</h1>
       {existingUserList.map((user) => (
         <div
           key={user.userID}

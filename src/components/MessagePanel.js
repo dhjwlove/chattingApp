@@ -11,7 +11,7 @@ export default function MessagePanel({
 }) {
   return (
     <div>
-      <h1 className="title">ChatPage</h1>
+      <h1 className="title">Message Panel</h1>
       <div>
         {`소켓연결 ${isConnected}`}
       </div>

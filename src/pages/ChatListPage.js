@@ -9,9 +9,16 @@ function ChatList({ data, onClickChatRoom }) {
 export default function ChatListPage() {
   const [chatList, setChatList] = useState([
     {
-      name: 'chat room',
-      uuid: 'uuid',
-      peoples: ['A', 'B'],
+      name: 'chat room 1',
+      peoples: [],
+    },
+    {
+      name: 'chat room 2',
+      peoples: [],
+    },
+    {
+      name: 'chat room 3',
+      peoples: [],
     },
   ]);
 
