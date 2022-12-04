@@ -5,7 +5,7 @@
   "main": "api-server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server_v2.js"
   },
   "author": "",
   "license": "ISC",

@@ -1,8 +1,5 @@
-const { SessionStore } = require('./sessionStore');
-
-class InMemorySessionStore extends SessionStore {
+class InMemorySessionStore {
   constructor() {
-    super();
     this.sessions = new Map();
   }
 
