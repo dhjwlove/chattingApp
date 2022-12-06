@@ -1,12 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './module/userSlice';
-import roomSlice from './module/roomSlice';
-import chatSlice from './module/chatSlice';
+import rootReducer from './module';
 
-export const store = configureStore({
-  reducer: {
-    user: userReducer,
-    room: roomSlice,
-    chat: chatSlice,
-  },
-});
+export default function configureAppStore() {
+  const store = configureStore({
+    reducer: rootReducer,
+    devTools: process.env.NODE_ENV !== 'production',
+  });
+
+  return store;
+}

@@ -8,11 +8,11 @@ export const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    addMessage: (state, action) => {
-      state.message = [...state.message, action.payload];
+    addMessageReducer: (state, action) => {
+      state.message.push(action.payload);
     },
   },
 });
-export const { addMessage } = chatSlice.actions;
+export const { addMessageReducer } = chatSlice.actions;
 
 export default chatSlice.reducer;
