@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useStore } from 'react-redux';
+import socketAPI from '../lib/socketAPI';
+import services from '../services';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const store = useStore();
 
   useEffect(() => {
     // const sessionID = localStorage.getItem('sessionID');
@@ -12,13 +16,13 @@ export default function LoginPage() {
     //   navigate('/chatPage');
     // }
   }, []);
-  const handleSubmit = (event) => {
-    // event.preventDefault();
-    // console.log('username: ', event.target.username.value);
-    // const username = event.target.username.value;
-    // socket.auth = { username };
-    // socket.connect();
-    // navigate('/chatPage');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log('username: ', event.target.username.value);
+    const username = event.target.username.value;
+    await socketAPI.emit('login', { userName: username });
+    // services.forEach((service) => service.init(store, socketAPI));
+    // navigate('/ChatListPage');
   };
 
   return (

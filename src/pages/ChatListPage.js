@@ -28,9 +28,9 @@ export default function ChatListPage() {
 
   return (
     <>
-      <div>
+      <h1>
         ChatListPage
-      </div>
+      </h1>
       <div>
         {chatList.map((d) => <ChatList key={d.name} data={d} onClickChatRoom={onClickHandler} />)}
       </div>

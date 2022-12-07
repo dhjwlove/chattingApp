@@ -3,8 +3,6 @@
 // const URL = 'http://localhost:3000';
 // const socket = io(URL, { autoConnect: false });
 
-// console.log('socket 초기화');
-
 // socket.onAny((event, ...args) => {
 //   console.log(event, args);
 // });
@@ -20,6 +18,7 @@ let instance = null;
 class SocketAPI {
   constructor() {
     if (instance) return instance;
+    this.connect();
     instance = this;
   }
 
