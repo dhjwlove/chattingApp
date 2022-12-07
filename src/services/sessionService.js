@@ -1,23 +1,23 @@
 // import React from 'react';
 // import { useNavigate } from 'react-router-dom';
-import socket from './socketService';
+import socketAPI from '../lib/socketAPI';
 
-function init() {
+async function init() {
   console.log('sessionService 초기화');
   //   const navigate = useNavigate();
   localStorage.setItem('userList', []);
-  socket.on('session', ({ userID }) => {
+  await socketAPI.on('session', ({ userID }) => {
     socket.auth = { userID };
     localStorage.setItem('userID', userID);
   });
 
-  socket.on('connect_error', (err) => {
+  await socket.on('connect_error', (err) => {
     if (err.message === 'invalid username') {
       localStorage.setItem('userID', '');
     }
   });
 
-  socket.on('users', (users) => {
+  await socketAPI.on('users', (users) => {
     const userList = localStorage.getItem('userList');
     users.forEach((user) => {
       for (let i = 0; i < userList.length; i += 1) {
@@ -35,7 +35,7 @@ function init() {
     localStorage.setItem('userList', [...userList]);
   });
 
-  socket.on('user_connected', (user) => {
+  await socketAPI.on('user_connected', (user) => {
     const userList = localStorage.getItem('userList');
     for (let i = 0; userList.length; i += 1) {
       const existUser = userList[i];
@@ -50,7 +50,7 @@ function init() {
     localStorage.setItem('userList', [...userList]);
   });
 
-  socket.on('disconnect', () => {
+  socketAPI.on('disconnect', () => {
     console.log('socket disconnect');
   });
 }

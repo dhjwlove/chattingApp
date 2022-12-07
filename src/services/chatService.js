@@ -1,9 +1,8 @@
-import socket from './socketService';
+import socketAPI from '../lib/socketAPI';
 
-function init() {
+async function init() {
   console.log('chatService 초기화');
-  socket.on('message', (data) => {
-
+  await socketAPI.on('message', (data) => {
   });
 }
 
