@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useStore } from 'react-redux';
 import socketAPI from '../lib/socketAPI';
-import services from '../services';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const store = useStore();
 
   useEffect(() => {
+    // todo: userID 스토어에서 가져오고 connect
     // const sessionID = localStorage.getItem('sessionID');
     // if (sessionID !== '') {
     //   // chatPage로 이동하기.
@@ -17,12 +15,19 @@ export default function LoginPage() {
     // }
   }, []);
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log('username: ', event.target.username.value);
-    const username = event.target.username.value;
-    await socketAPI.emit('login', { userName: username });
-    // services.forEach((service) => service.init(store, socketAPI));
-    // navigate('/ChatListPage');
+    try {
+      event.preventDefault();
+      console.log('username: ', event.target.username.value);
+      const username = event.target.username.value;
+      const userID = await socketAPI.connect({ userName: username });
+      console.log('userID', userID);
+      // todo : userID 를 스토어에 저장하기
+      // navigate('/ChatListPage');
+    } catch (err) {
+      if (err.message === 'invalid username') {
+        // store.dispatch(setUserID(''));
+      }
+    }
   };
 
   return (

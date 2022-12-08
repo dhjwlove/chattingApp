@@ -10,7 +10,7 @@ export default function ChatPage() {
   const [content, setContent] = useState('');
   const [chatList, setChatList] = useState([]);
   const [existingUserList, setExistingUserList] = useState([]);
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  // const [isConnected, setIsConnected] = useState(socket.connected);
   const [selectedUser, setSelectedUser] = useState({});
   const userListRef = useRef([]);
 
